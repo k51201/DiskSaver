@@ -1,7 +1,12 @@
+package disksaver;
+
 import java.io.PrintWriter;
+import java.util.Calendar;
 
 /**
  * Created by vampa on 07.02.2016.
+ *
+ * Logging service.
  */
 public class Logger {
     private static Logger loggerInstance = new Logger();
@@ -21,6 +26,8 @@ public class Logger {
     }
 
     public void write(String line) {
-        out.println(line);
+        Calendar time = Calendar.getInstance();
+        out.format("%1$te.%1$tm.%1$tY %1$tH:%1$tM:%1$tS : %2$s\n", time, line);
+        out.flush();
     }
 }
