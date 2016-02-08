@@ -29,6 +29,9 @@ public class ElementsEntity implements Serializable{
     @Column(name = "size")
     private int size;
 
+    @Column(name = "is_directory")
+    private boolean isDirectory;
+
     @ManyToOne
     @JoinColumn (name = "category", referencedColumnName = "id")
     private ElementCategoryEntity elementCategory;
@@ -78,6 +81,14 @@ public class ElementsEntity implements Serializable{
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public boolean isDirectory() {
+        return isDirectory;
+    }
+
+    public void setDirectory(boolean directory) {
+        isDirectory = directory;
     }
 
     public ElementCategoryEntity getElementCategory() {

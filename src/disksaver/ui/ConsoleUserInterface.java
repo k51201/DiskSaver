@@ -58,9 +58,11 @@ public class ConsoleUserInterface {
 
         do {
             choice = printPagedMenu("Add new disk profile. Select CD drive", drives, 0);
-            if (choice < 0 || drives.length < choice)
-                return;
-        } while (confirmationRequest("Start scan?", false));
+        } while (choice < 0 || drives.length < choice);
+
+        if (!confirmationRequest("Start scan?", false))
+            return;
+
         CDProfileCreator creator = new CDProfileCreator(drives[choice]);
         creator.startScan();
         System.out.println("Creating");
