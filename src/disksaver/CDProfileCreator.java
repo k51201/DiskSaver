@@ -10,12 +10,30 @@ import java.util.List;
  *
  * Class, that provides creating of CD profiles.
  */
-public class CDProfileEditor {
+public class CDProfileCreator implements Runnable {
     private static Logger logger = Logger.getInstance();
 
+    private File drivePath;
+    private Thread creatorThread;
+
+    public CDProfileCreator(String path) {
+        this.drivePath = new File(path);
+        this.creatorThread = new Thread(this);
+    }
+
+    @Override
+    public void run() {
+
+    }
+
+    // Used to start scan specified CD
+    public void startScan() {
+        creatorThread.start();
+    }
+
     // Returns list of available CD drives
-    public static List<String> getAvailableDrives() {
-        ArrayList<String> opticalDeviceList = new ArrayList<>();
+    public static String[] getAvailableDrives() {
+        List<String> availableDevices = new ArrayList<>();
         File[] roots = File.listRoots();
         // If we're in *nix reading /etc/mtab
         if (roots.length == 1 && roots[0].getPath().equals("/"))
@@ -24,9 +42,9 @@ public class CDProfileEditor {
                 String line = "";
                 while (line != null) {
                     line = mtabIn.readLine();
-                    if (line.contains("iso9660")) {
+                    if (line != null && line.contains("iso9660")) {
                         String opticalDevice = line.split("\\s")[1];
-                        opticalDeviceList.add(opticalDevice);
+                        availableDevices.add(opticalDevice);
                         logger.write("Found device: " + opticalDevice);
                     }
                 }
@@ -41,9 +59,12 @@ public class CDProfileEditor {
             for (File root : roots)
                 if ("CD Drive".equals(FileSystemView.getFileSystemView().getSystemTypeDescription(root)) && root.exists()) {
                     logger.write("Found device: " + root.getPath());
-                    opticalDeviceList.add(root.getPath());
+                    availableDevices.add(root.getPath());
                 }
         }
-        return opticalDeviceList;
+
+        String[] result = new String[availableDevices.size()];
+        availableDevices.toArray(result);
+        return result;
     }
 }

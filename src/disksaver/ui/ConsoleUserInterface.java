@@ -1,5 +1,7 @@
 package disksaver.ui;
 
+import disksaver.CDProfileCreator;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -22,36 +24,70 @@ public class ConsoleUserInterface {
         } catch (IOException e) {
             System.out.println("I/O exception occured: " + e.getMessage());
             System.out.println("Closing...");
-            quit();
         }
     }
 
-    // Main menu. Switching between browser and editor
+    // Main menu. Switching between browser and creator
     private void showMainMenu() throws IOException {
-        int choice = printPagedMenu("Main menu", new String[]{"Browse & edit saved collection", "Add new disk profile to collection"}, 0);
-        switch (choice) {
-            case 0:
-                showBrowserMenu();
-                break;
-            case 1:
-                showEditorMenu();
-                break;
-            default:
-                quit();
-        }
+        String[] mainMenu = new String[]{"Browse & edit saved collection", "Add new disk profile to collection"};
+        int choice;
+
+        do {
+            choice = printPagedMenu("Main menu", mainMenu, 0);
+            switch (choice) {
+                case 0:
+                    showBrowserMenu();
+                    break;
+                case 1:
+                    showCreatorMenu();
+            }
+        } while (0 <= choice && choice < mainMenu.length);
     }
 
     private void showBrowserMenu() throws IOException {
         int choice = printPagedMenu("Collection browser", new String[]{}, 0);
     }
 
-    private void showEditorMenu() throws IOException {
-        int choice = printPagedMenu("Add new disk profile", new String[]{}, 0);
+    private void showCreatorMenu() throws IOException {
+        int choice;
+        String[] drives = CDProfileCreator.getAvailableDrives();
+        if (drives == null || drives.length == 0) {
+            System.out.println("CD drives not found");
+            return;
+        }
+
+        do {
+            choice = printPagedMenu("Add new disk profile. Select CD drive", drives, 0);
+            if (choice < 0 || drives.length < choice)
+                return;
+        } while (confirmationRequest("Start scan?", false));
+        CDProfileCreator creator = new CDProfileCreator(drives[choice]);
+        creator.startScan();
+        System.out.println("Creating");
     }
 
-    // Quit application
-    private void quit() {
-        // Just close app
+    // Prints question and accepts [y,Y,n,N] or, in case of pressing <Enter>, returns defaultAnswer
+    private boolean confirmationRequest(String question, boolean defaultAnswer) throws IOException {
+        do {
+            System.out.print(question + " (" + (defaultAnswer ? "Y/n" : "y/N") + ") > ");
+            char answer = (char) cin.read();
+            switch (answer) {
+                case 'y':
+                case 'Y':
+                    System.out.println();
+                    return true;
+                case 'n':
+                case 'N':
+                    System.out.println();
+                    return false;
+                case '\n':
+                    System.out.println();
+                    return defaultAnswer;
+                default:
+                    while (cin.ready())
+                        cin.skip(1);
+            }
+        } while (true);
     }
 
     // Paged menu by 10 entries per page, takes digits [1-9, 0] and [+, -, q, Q] for user answer
@@ -125,6 +161,10 @@ public class ConsoleUserInterface {
                     choice = -1;
             }
         } while (choice < -1 || entries.length <= choice);
+
+        while (cin.ready())
+            cin.skip(1);
+        System.out.println();
 
         return choice;
     }
