@@ -2,7 +2,9 @@ package disksaver.dbservice.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by vampa on 08.02.2016.
@@ -36,9 +38,12 @@ public class CDProfilesEntity implements Serializable{
     @Column(name = "burned_at_date", nullable = false)
     private Date burnedAtDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn (name = "category_id", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn (name = "category", referencedColumnName = "id")
     private ProfileCategoryEntity profileCategory;
+
+    @OneToMany(mappedBy = "cdProfiles", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ElementsEntity> elements = new ArrayList<>();
 
     public CDProfilesEntity() {
     }
@@ -106,4 +111,13 @@ public class CDProfilesEntity implements Serializable{
     public void setProfileCategory(ProfileCategoryEntity profileCategory) {
         this.profileCategory = profileCategory;
     }
+
+    public List<ElementsEntity> getElements() {
+        return elements;
+    }
+
+    public void setElements(List<ElementsEntity> elements) {
+        this.elements = elements;
+    }
+
 }

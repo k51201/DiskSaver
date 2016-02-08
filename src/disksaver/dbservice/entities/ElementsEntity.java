@@ -30,12 +30,12 @@ public class ElementsEntity implements Serializable{
     private int size;
 
     @ManyToOne
-    @JoinColumn (name = "category_id", referencedColumnName = "id")
+    @JoinColumn (name = "category", referencedColumnName = "id")
     private ElementCategoryEntity elementCategory;
 
     @ManyToOne
-    @JoinColumn (name = "disk_profile_id", referencedColumnName = "id")
-    private CDProfilesEntity diskProfileId;
+    @JoinColumn (name = "disk_profile", referencedColumnName = "id")
+    private CDProfilesEntity diskProfile;
 
     public ElementsEntity() {
     }
@@ -88,11 +88,11 @@ public class ElementsEntity implements Serializable{
         this.elementCategory = elementCategory;
     }
 
-    public CDProfilesEntity getDiskProfileId() {
-        return diskProfileId;
+    public CDProfilesEntity getDiskProfile() {
+        return diskProfile;
     }
 
-    public void setDiskProfileId(CDProfilesEntity diskProfileId) {
-        this.diskProfileId = diskProfileId;
+    public void setDiskProfile(CDProfilesEntity diskProfile) {
+        this.diskProfile = diskProfile;
     }
 }
