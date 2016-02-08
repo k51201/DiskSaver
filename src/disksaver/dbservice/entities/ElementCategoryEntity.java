@@ -26,6 +26,12 @@ public class ElementCategoryEntity implements Serializable{
     public ElementCategoryEntity() {
     }
 
+    public ElementCategoryEntity(String name, String description) {
+        this.setId(-1);
+        this.setName(name);
+        this.setDescription(description);
+    }
+
     public long getId() {
         return id;
     }

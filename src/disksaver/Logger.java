@@ -13,16 +13,16 @@ public class Logger {
 
     private PrintWriter out;
 
-    public void setOut(PrintWriter out) {
-        this.out = out;
-    }
-
     public static Logger getInstance() {
         return loggerInstance;
     }
 
     private Logger() {
         out = new PrintWriter(System.out);
+    }
+
+    void setOut(PrintWriter out) {
+        this.out = out;
     }
 
     public void write(String line) {

@@ -1,4 +1,4 @@
-package disksaver;
+package disksaver.profile;
 
 import java.util.Date;
 import java.util.List;

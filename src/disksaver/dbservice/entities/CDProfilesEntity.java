@@ -42,7 +42,7 @@ public class CDProfilesEntity implements Serializable{
     @JoinColumn (name = "category", referencedColumnName = "id")
     private ProfileCategoryEntity profileCategory;
 
-    @OneToMany(mappedBy = "cdProfiles", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "diskProfile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ElementsEntity> elements = new ArrayList<>();
 
     public CDProfilesEntity() {

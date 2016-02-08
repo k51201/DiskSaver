@@ -1,4 +1,4 @@
-package disksaver;
+package disksaver.profile;
 
 import java.io.File;
 

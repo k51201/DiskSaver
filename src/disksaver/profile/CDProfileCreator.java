@@ -1,9 +1,10 @@
-package disksaver;
+package disksaver.profile;
+
+import disksaver.Logger;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,20 +17,22 @@ public class CDProfileCreator {
     private static boolean runningInUnix;
 
     private final File drivePath;
-    private final Thread creatorThread;
+    private final Thread rawCreatorThread;
+    private final RawProfileCreator rawCreator;
 
     public CDProfileCreator(String path) {
         this.drivePath = new File(path);
-        this.creatorThread = new Thread(new RawProfileCreator());
+        this.rawCreator = new RawProfileCreator(drivePath);
+        this.rawCreatorThread = new Thread(rawCreator);
     }
 
     // Used to start scan specified CD
     public void startScan() {
-        creatorThread.start();
+        rawCreatorThread.start();
     }
 
     // Returns list of available CD drives
-    public static String[] getAvailableDrives() {
+    public static List<String> getAvailableDrives() {
         List<String> availableDevices;
         File[] roots = File.listRoots();
 
@@ -41,11 +44,10 @@ public class CDProfileCreator {
             availableDevices = getAvailableDrivesForWindows(roots);
         }
 
-        String[] result = new String[availableDevices.size()];
-        availableDevices.toArray(result);
-        return result;
+        return availableDevices;
     }
 
+    // Returns volume label for specified drive path, algorithm depends on OS
     public static String getVolumeName(File drivePath) {
         if (runningInUnix)
             return getVolumeNameForUnix(drivePath);
@@ -136,28 +138,19 @@ public class CDProfileCreator {
         return devicePath;
     }
 
-    private class RawProfileCreator implements Runnable {
-        private List<RawElement> rawElements = new ArrayList<>();
+    File getDrivePath() {
+        return drivePath;
+    }
 
-        @Override
-        public void run() {
-            createElementsFrom(drivePath);
-            String volumeName = getVolumeName(drivePath);
-            long size = drivePath.getTotalSpace();
-            Date burned = new Date(drivePath.lastModified());
-
-            RawCDProfile rawProfile = new RawCDProfile(volumeName, size, burned, rawElements);
+    public void waitForRawCreator() {
+        try {
+            rawCreatorThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+    }
 
-        // Recursively adds files and directories in rawElements list
-        private void createElementsFrom(File path) {
-            if (path.exists() && !path.equals(drivePath))
-                rawElements.add(new RawElement(path));
-            if (path.isDirectory()) {
-                File[] files = path.listFiles();
-                for (File file : files)
-                    createElementsFrom(file);
-            }
-        }
+    public RawCDProfile getRawProfile() {
+        return rawCreator.getRawProfile();
     }
 }

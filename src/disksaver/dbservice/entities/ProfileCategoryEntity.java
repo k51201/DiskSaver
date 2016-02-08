@@ -26,6 +26,12 @@ public class ProfileCategoryEntity implements Serializable{
     public ProfileCategoryEntity() {
     }
 
+    public ProfileCategoryEntity(String name, String description) {
+        this.setId(-1);
+        this.setName(name);
+        this.setDescription(description);
+    }
+
     public long getId() {
         return id;
     }
