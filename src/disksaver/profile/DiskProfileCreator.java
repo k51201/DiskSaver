@@ -19,13 +19,11 @@ public class DiskProfileCreator {
     private static Logger logger = Logger.getInstance();
     private static boolean runningInUnix;
 
-    private final File drivePath;
     private final Thread rawCreatorThread;
     private final RawProfileCreator rawCreator;
 
     public DiskProfileCreator(String path) {
-        this.drivePath = new File(path);
-        this.rawCreator = new RawProfileCreator(drivePath);
+        this.rawCreator = new RawProfileCreator(new File(path));
         this.rawCreatorThread = new Thread(rawCreator);
     }
 
@@ -161,16 +159,10 @@ public class DiskProfileCreator {
         return rawCreator.getRawElements().get(index).isDirectory();
     }
 
-    public void setProfileName(String profileName) {
+    public void setProfileUserFields(String profileName, String profileDescription, long profileCategory) {
         rawCreator.getRawProfile().setName(profileName);
-    }
-
-    public void setProfileCategory(long profileCategory) {
-        rawCreator.getRawProfile().setCategory(profileCategory);
-    }
-
-    public void setProfileDescription(String profileDescription) {
         rawCreator.getRawProfile().setDescription(profileDescription);
+        rawCreator.getRawProfile().setCategory(profileCategory);
     }
 
     public void setElementDescription(int index, String description) {

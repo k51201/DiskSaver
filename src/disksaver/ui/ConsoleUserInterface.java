@@ -88,14 +88,15 @@ public class ConsoleUserInterface implements UserInterface {
         creator = new DiskProfileCreator(drives.get(choice));
         creator.startScan();
 
-        creator.setProfileName(askString("Enter name of this disk"));
-        creator.setProfileCategory(showProfileCategoryMenu());
-        creator.setProfileDescription(askString("Enter a description for this disk profile"));
+        String profileName = askString("Enter name of this disk");
+        long profileCategory = showProfileCategoryMenu();
+        String profileDescription = askString("Enter a description for this disk profile");
 
-        if (creator.isScanComplete()) {
+        if (!creator.isScanComplete()) {
             System.out.println("Performing scan. Please wait.");
             creator.waitForRawCreator();
         }
+        creator.setProfileUserFields(profileName, profileDescription, profileCategory);
         System.out.println("Scan complete");
 
         if (confirmationRequest("Do you want to edit elements before saving?", true))
@@ -206,7 +207,8 @@ public class ConsoleUserInterface implements UserInterface {
     // Simply asks a question (1st parameter) and returns answer
     private String askString(String requestText) throws IOException {
         System.out.print(requestText + " > ");
-        return new BufferedReader(cin).readLine();
+        String answer = cin.readLine();
+        return answer != null ? answer : "";
     }
 
     // Prints question and accepts [y,Y,n,N] or, in case of pressing <Enter>, returns defaultAnswer
