@@ -1,4 +1,4 @@
-package disksaver.dbservice.entities;
+package disksaver.dbservice.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,8 +11,8 @@ import java.util.List;
  */
 
 @Entity
-@Table(name = "cd_profiles")
-public class CDProfilesEntity implements Serializable{
+@Table(name = "disk_profiles")
+public class DiskProfilesEntity implements Serializable{
     private static final long serialVersionUID = 2016020801L;
 
     @Id
@@ -32,20 +32,32 @@ public class CDProfilesEntity implements Serializable{
     @Column(name = "description", length = 2048, nullable = false)
     private String description;
 
-    @Column(name = "modification_date", nullable = false)
-    private Date modificationDate;
+    @Column(name = "modified", nullable = false)
+    private Date modified;
 
-    @Column(name = "burned_at_date", nullable = false)
-    private Date burnedAtDate;
+    @Column(name = "burned", nullable = false)
+    private Date burned;
 
     @ManyToOne
     @JoinColumn (name = "category", referencedColumnName = "id")
-    private ProfileCategoryEntity profileCategory;
+    private ProfileCategoryEntity category;
 
     @OneToMany(mappedBy = "diskProfile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ElementsEntity> elements = new ArrayList<>();
 
-    public CDProfilesEntity() {
+    public DiskProfilesEntity() {
+    }
+
+    public DiskProfilesEntity(String name, String volumeName, long size, String description,
+                              Date modified, Date burned, ProfileCategoryEntity category) {
+        this.setId(-1);
+        this.setName(name);
+        this.setVolumeName(volumeName);
+        this.setSize(size);
+        this.setDescription(description);
+        this.setModified(modified);
+        this.setBurned(burned);
+        this.setCategory(category);
     }
 
     public long getId() {
@@ -88,28 +100,28 @@ public class CDProfilesEntity implements Serializable{
         this.description = description;
     }
 
-    public Date getModificationDate() {
-        return modificationDate;
+    public Date getModified() {
+        return modified;
     }
 
-    public void setModificationDate(Date modificationDate) {
-        this.modificationDate = modificationDate;
+    public void setModified(Date modified) {
+        this.modified = modified;
     }
 
-    public Date getBurnedAtDate() {
-        return burnedAtDate;
+    public Date getBurned() {
+        return burned;
     }
 
-    public void setBurnedAtDate(Date burnedAtDate) {
-        this.burnedAtDate = burnedAtDate;
+    public void setBurned(Date burned) {
+        this.burned = burned;
     }
 
-    public ProfileCategoryEntity getProfileCategory() {
-        return profileCategory;
+    public ProfileCategoryEntity getCategory() {
+        return category;
     }
 
-    public void setProfileCategory(ProfileCategoryEntity profileCategory) {
-        this.profileCategory = profileCategory;
+    public void setCategory(ProfileCategoryEntity category) {
+        this.category = category;
     }
 
     public List<ElementsEntity> getElements() {

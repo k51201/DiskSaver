@@ -1,6 +1,6 @@
 package disksaver.ui;
 
-import disksaver.profile.CDProfileCreator;
+import disksaver.profile.DiskProfileCreator;
 import disksaver.dbservice.DBException;
 import disksaver.dbservice.DBService;
 
@@ -35,7 +35,6 @@ public class ConsoleUserInterface implements UserInterface {
             System.out.println("I/O exception occured: " + e.getMessage());
             System.out.println("Closing...");
         }
-        dbService.close();
     }
 
     // Main menu. Switching between browser and creator
@@ -48,7 +47,7 @@ public class ConsoleUserInterface implements UserInterface {
         int choice;
 
         do {
-            choice = printPagedMenu("Main menu", mainMenu, 0);
+            choice = printPagedMenu("Main menu", mainMenu);
             switch (choice) {
                 case 0:
                     showBrowserMenu();
@@ -65,68 +64,149 @@ public class ConsoleUserInterface implements UserInterface {
 
     //NIY: Browser menu used to browse and edit saved collection
     private void showBrowserMenu() throws IOException {
-        int choice = printPagedMenu("Collection browser", new ArrayList<>(), 0);
+        int choice = printPagedMenu("Collection browser", new ArrayList<>());
     }
 
     // Creator menu used to manage profile creation
     private void showCreatorMenu() throws IOException {
         int choice;
-        List<String> drives = CDProfileCreator.getAvailableDrives();
+        DiskProfileCreator creator;
+        List<String> drives = DiskProfileCreator.getAvailableDrives();
+
         if (drives == null || drives.isEmpty()) {
             System.out.println("CD drives not found");
             return;
         }
 
         do {
-            choice = printPagedMenu("Add new disk profile. Select CD drive", drives, 0);
+            choice = printPagedMenu("Add new disk profile. Select CD drive", drives);
         } while (choice < 0 || drives.size() < choice);
 
         if (!confirmationRequest("Start scan?", false))
             return;
 
-        CDProfileCreator creator = new CDProfileCreator(drives.get(choice));
+        creator = new DiskProfileCreator(drives.get(choice));
         creator.startScan();
 
-        String profileName = askString("Enter name of this disk");
+        creator.setProfileName(askString("Enter name of this disk"));
+        creator.setProfileCategory(showProfileCategoryMenu());
+        creator.setProfileDescription(askString("Enter a description for this disk profile"));
 
+        if (creator.isScanComplete()) {
+            System.out.println("Performing scan. Please wait.");
+            creator.waitForRawCreator();
+        }
+        System.out.println("Scan complete");
+
+        if (confirmationRequest("Do you want to edit elements before saving?", true))
+            showEditElementMenu(creator);
+
+        if (confirmationRequest("Save to database", true))
+            creator.saveProfileToDB(dbService);
+    }
+
+    private long showProfileCategoryMenu() throws IOException {
+        int choice;
+        long profileCategoryId = -1;
         List<String> categories = null;
+
         try {
             categories = dbService.getProfileCategories();
         } catch (DBException e) {
             e.printStackTrace();
         }
+
         if (categories == null)
             categories = new ArrayList<>(1);
         categories.add("Add new category");
-        choice = printPagedMenu("Select category", categories, 0);
+        choice = printPagedMenu("Select category", categories);
 
-        long profileCategoryId;
         if (choice == categories.size() - 1)
             try {
                 String categoryName = askString("Enter a name of new category");
                 String categoryDesc = askString("Enter a description of " + categoryName);
-                profileCategoryId = dbService.addNewProfileCategory(categoryName, categoryDesc);
+                profileCategoryId = dbService.addProfileCategory(categoryName, categoryDesc);
             } catch (DBException e) {
                 e.printStackTrace();
             }
         else
             profileCategoryId = choice;
 
-        String profileDesc = askString("Enter a description for this disk profile");
+        return profileCategoryId;
+    }
 
-        if (creator.getRawProfile() == null) {
-            System.out.println("Performing scan. Please wait.");
-            creator.waitForRawCreator();
+    private long showElementCategoryMenu() throws IOException {
+        int choice;
+        long elementCategoryId = -1;
+        List<String> categories = null;
+
+        try {
+            categories = dbService.getElementCategories();
+        } catch (DBException e) {
+            e.printStackTrace();
         }
-        System.out.println("Scan complete");
 
+        if (categories == null)
+            categories = new ArrayList<>(1);
+        categories.add("Add new category");
+        choice = printPagedMenu("Select category", categories);
+
+        if (choice == categories.size() - 1)
+            try {
+                String categoryName = askString("Enter a name of new category");
+                String categoryDesc = askString("Enter a description of " + categoryName);
+                elementCategoryId = dbService.addElementCategory(categoryName, categoryDesc);
+            } catch (DBException e) {
+                e.printStackTrace();
+            }
+        else
+            elementCategoryId = choice;
+
+        return elementCategoryId;
+    }
+
+    // Menu for editing element list before it is sent to database
+    private void showEditElementMenu(DiskProfileCreator creator) throws IOException {
+        int choice;
+        List<String> editElementMenu = new ArrayList<>();
+
+        editElementMenu.add("Add/edit description");
+        editElementMenu.add("Select category");
+        editElementMenu.add("Toggle saving element");
+
+        List<String> elementPathList = creator.getElementsPathList();
+        do {
+            choice = printPagedMenu("Edit elements. Select \'back\' to save", elementPathList);
+            if (0 <= choice) {
+                if (creator.isElementADirectory(choice)) {
+                    editElementMenu.add("Do not save all included elements");
+                }
+
+                int editChoice = printPagedMenu("Edit element " + elementPathList.get(choice), editElementMenu);
+                switch (editChoice) {
+                    case 1:
+                        creator.setElementDescription(choice, askString("Description"));
+                        break;
+                    case 2:
+                        creator.setElementCategory(choice, showElementCategoryMenu());
+                        break;
+                    case 3:
+                        creator.toggleSavingElement(choice, confirmationRequest("Do you want to save this element?", true));
+                        break;
+                    case 4:
+                        creator.toggleSavingIncludedElements(choice, confirmationRequest("Do you want to save included elements?", true));
+                }
+
+                if (creator.isElementADirectory(choice))
+                    editElementMenu.remove(editElementMenu.size() - 1);
+            }
+        } while (choice != -1);
     }
 
     // Simply asks a question (1st parameter) and returns answer
     private String askString(String requestText) throws IOException {
-        System.out.println(requestText + " > ");
-        String answer = new BufferedReader(cin).readLine();
-        return answer;
+        System.out.print(requestText + " > ");
+        return new BufferedReader(cin).readLine();
     }
 
     // Prints question and accepts [y,Y,n,N] or, in case of pressing <Enter>, returns defaultAnswer
@@ -154,6 +234,11 @@ public class ConsoleUserInterface implements UserInterface {
                     return defaultAnswer;
             }
         } while (true);
+    }
+
+    // See main method below. This method used to not specify start page (which always 0)
+    private int printPagedMenu(String title, List<String> entries) throws IOException {
+        return printPagedMenu(title, entries, 0);
     }
 
     // Paged menu by 10 entries per page, takes digits [1-9, 0] and [+, -, q, Q] for user answer

@@ -1,18 +1,21 @@
 package disksaver.profile;
 
 import disksaver.Logger;
+import disksaver.dbservice.DBException;
+import disksaver.dbservice.DBService;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Vampa on 08.02.2016.
  *
  * Class, that provides creating of CD profiles.
  */
-public class CDProfileCreator {
+public class DiskProfileCreator {
     private static Logger logger = Logger.getInstance();
     private static boolean runningInUnix;
 
@@ -20,7 +23,7 @@ public class CDProfileCreator {
     private final Thread rawCreatorThread;
     private final RawProfileCreator rawCreator;
 
-    public CDProfileCreator(String path) {
+    public DiskProfileCreator(String path) {
         this.drivePath = new File(path);
         this.rawCreator = new RawProfileCreator(drivePath);
         this.rawCreatorThread = new Thread(rawCreator);
@@ -138,19 +141,86 @@ public class CDProfileCreator {
         return devicePath;
     }
 
-    File getDrivePath() {
-        return drivePath;
+    public boolean isScanComplete() {
+        return rawCreator.getRawProfile() == null;
     }
 
     public void waitForRawCreator() {
         try {
             rawCreatorThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        } catch (InterruptedException ignore) {}
     }
 
-    public RawCDProfile getRawProfile() {
-        return rawCreator.getRawProfile();
+    public List<String> getElementsPathList() {
+        List<String> elementsPathList = new ArrayList<>();
+        elementsPathList.addAll(rawCreator.getRawElements().stream().map(RawElement::getPath).collect(Collectors.toList()));
+        return elementsPathList;
+    }
+
+    public boolean isElementADirectory(int index) {
+        return rawCreator.getRawElements().get(index).isDirectory();
+    }
+
+    public void setProfileName(String profileName) {
+        rawCreator.getRawProfile().setName(profileName);
+    }
+
+    public void setProfileCategory(long profileCategory) {
+        rawCreator.getRawProfile().setCategory(profileCategory);
+    }
+
+    public void setProfileDescription(String profileDescription) {
+        rawCreator.getRawProfile().setDescription(profileDescription);
+    }
+
+    public void setElementDescription(int index, String description) {
+        rawCreator.getRawElements().get(index).setDescription(description);
+    }
+
+    public void setElementCategory(int index, long category) {
+        rawCreator.getRawElements().get(index).setCategory(category);
+    }
+
+    public void toggleSavingElement(int index, boolean save) {
+        rawCreator.getRawElements().get(index).setSave(save);
+    }
+
+    public void toggleSavingIncludedElements(int index, boolean save) {
+        List<RawElement> elements = rawCreator.getRawElements();
+        for (int i = index + 1; i < elements.size(); i++)
+            if (elements.get(i).getPath().startsWith(elements.get(index).getPath()))
+                elements.get(i).setSave(save);
+    }
+
+    public void saveProfileToDB(DBService dbService) {
+        RawDiskProfile profile = rawCreator.getRawProfile();
+        List<RawElement> elements = rawCreator.getRawElements();
+
+        long profileId = -1;
+        try {
+            profileId = dbService.addDiskProfile(profile.getName(), profile.getVolumeName(), profile.getSize(),
+                    profile.getDescription(), profile.getModified(), profile.getBurned(), profile.getCategory());
+
+            System.out.println("Created profile: ID #" + profileId);
+        } catch (DBException e) {
+            e.printStackTrace();
+        }
+
+        if (profileId > 0) {
+            int elementCounter = 0;
+            for (RawElement element : elements)
+                if (element.isSave())
+                    try {
+                        long elementId = dbService.addElement(element.getName(), element.getPath(),
+                                element.getDescription(), element.getSize(), element.isDirectory(),
+                                element.getCategory(), profileId);
+                        elementCounter++;
+
+                        System.out.println("Created element: ID #" + elementId);
+                    } catch (DBException e) {
+                        e.printStackTrace();
+                    }
+            System.out.println("Created " + elementCounter + " elements");
+        }
     }
 }

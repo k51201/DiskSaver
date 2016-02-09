@@ -23,14 +23,19 @@ public class Main {
 
         File logFile = new File(String.format("%1$te%1$tm%1$tY-%1$tH%1$tM%1$tS.log", Calendar.getInstance().getTime()));
         try {
-            if (!logFile.exists())
-                logFile.createNewFile();
+            boolean logFileCreated = logFile.createNewFile();
             logger.setOut(new PrintWriter(logFile));
+            if (logFileCreated)
+                logger.write("Log file created");
         } catch (IOException e) {
             System.out.println("Unable to create log file : " + e.getMessage());
         }
         logger.write("Started");
+
         userInterface.initUI();
+
+        dbService.close();
+        logger.close();
     }
 
 }

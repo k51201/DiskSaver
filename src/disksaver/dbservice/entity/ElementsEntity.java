@@ -1,4 +1,4 @@
-package disksaver.dbservice.entities;
+package disksaver.dbservice.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -27,20 +27,32 @@ public class ElementsEntity implements Serializable{
     private String description;
 
     @Column(name = "size")
-    private int size;
+    private long size;
 
-    @Column(name = "is_directory")
-    private boolean isDirectory;
+    @Column(name = "directory")
+    private boolean directory;
 
     @ManyToOne
     @JoinColumn (name = "category", referencedColumnName = "id")
-    private ElementCategoryEntity elementCategory;
+    private ElementCategoryEntity category;
 
     @ManyToOne
     @JoinColumn (name = "disk_profile", referencedColumnName = "id")
-    private CDProfilesEntity diskProfile;
+    private DiskProfilesEntity diskProfile;
 
     public ElementsEntity() {
+    }
+
+    public ElementsEntity(String name, String path, String description, long size,
+                          boolean directory, ElementCategoryEntity category, DiskProfilesEntity diskProfile) {
+        this.setId(-1);
+        this.setName(name);
+        this.setPath(path);
+        this.setDescription(description);
+        this.setSize(size);
+        this.setDirectory(directory);
+        this.setCategory(category);
+        this.setDiskProfile(diskProfile);
     }
 
     public long getId() {
@@ -75,35 +87,35 @@ public class ElementsEntity implements Serializable{
         this.description = description;
     }
 
-    public int getSize() {
+    public long getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(long size) {
         this.size = size;
     }
 
     public boolean isDirectory() {
-        return isDirectory;
+        return directory;
     }
 
     public void setDirectory(boolean directory) {
-        isDirectory = directory;
+        this.directory = directory;
     }
 
-    public ElementCategoryEntity getElementCategory() {
-        return elementCategory;
+    public ElementCategoryEntity getCategory() {
+        return category;
     }
 
-    public void setElementCategory(ElementCategoryEntity elementCategory) {
-        this.elementCategory = elementCategory;
+    public void setCategory(ElementCategoryEntity category) {
+        this.category = category;
     }
 
-    public CDProfilesEntity getDiskProfile() {
+    public DiskProfilesEntity getDiskProfile() {
         return diskProfile;
     }
 
-    public void setDiskProfile(CDProfilesEntity diskProfile) {
+    public void setDiskProfile(DiskProfilesEntity diskProfile) {
         this.diskProfile = diskProfile;
     }
 }

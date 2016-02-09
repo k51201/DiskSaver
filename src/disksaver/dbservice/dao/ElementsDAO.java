@@ -1,6 +1,8 @@
 package disksaver.dbservice.dao;
 
-import disksaver.dbservice.entities.ElementsEntity;
+import disksaver.dbservice.entity.DiskProfilesEntity;
+import disksaver.dbservice.entity.ElementCategoryEntity;
+import disksaver.dbservice.entity.ElementsEntity;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
@@ -16,5 +18,13 @@ public class ElementsDAO {
 
     public ElementsEntity get(long id) throws HibernateException {
         return session.get(ElementsEntity.class, id);
+    }
+
+    public long addElement(String name, String path, String description, long size,
+                           boolean directory, long categoryId, long profileId) {
+        ElementCategoryEntity category = session.load(ElementCategoryEntity.class, categoryId);
+        DiskProfilesEntity profile = session.load(DiskProfilesEntity.class, profileId);
+
+        return (Long) session.save(new ElementsEntity(name, path, description, size, directory, category, profile));
     }
 }

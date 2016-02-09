@@ -1,4 +1,4 @@
-package disksaver.dbservice.entities;
+package disksaver.dbservice.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -8,9 +8,9 @@ import java.io.Serializable;
  */
 
 @Entity
-@Table(name = "profile_category")
-public class ProfileCategoryEntity implements Serializable{
-    private static final long serialVersionUID = 2016020804L;
+@Table(name = "element_category")
+public class ElementCategoryEntity implements Serializable{
+    private static final long serialVersionUID = 2016020802L;
 
     @Id
     @Column(name = "id")
@@ -23,10 +23,10 @@ public class ProfileCategoryEntity implements Serializable{
     @Column(name = "description", length = 2048, nullable = false)
     private String description;
 
-    public ProfileCategoryEntity() {
+    public ElementCategoryEntity() {
     }
 
-    public ProfileCategoryEntity(String name, String description) {
+    public ElementCategoryEntity(String name, String description) {
         this.setId(-1);
         this.setName(name);
         this.setDescription(description);

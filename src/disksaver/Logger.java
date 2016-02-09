@@ -30,4 +30,8 @@ public class Logger {
         out.format("%1$te.%1$tm.%1$tY %1$tH:%1$tM:%1$tS : %2$s\n", time, line);
         out.flush();
     }
+
+    public void close() {
+        out.close();
+    }
 }

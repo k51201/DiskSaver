@@ -1,6 +1,6 @@
 package disksaver.dbservice.dao;
 
-import disksaver.dbservice.entities.ElementCategoryEntity;
+import disksaver.dbservice.entity.ElementCategoryEntity;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
