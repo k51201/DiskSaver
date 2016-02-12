@@ -1,6 +1,7 @@
 package disksaver.ui.console;
 
-import disksaver.profile.DiskProfileCreator;
+import disksaver.Logger;
+import disksaver.creator.DiskProfileCreator;
 import disksaver.dbservice.DBException;
 import disksaver.dbservice.DBService;
 import disksaver.ui.UserInterface;
@@ -16,10 +17,10 @@ import java.util.List;
  *
  * User Interface for console.
  */
-//TODO: Implement logging
 public class ConsoleUserInterface implements UserInterface {
     private final MenuUtil menuUtil;
     private final DBService dbService;
+    private final Logger logger;
     // Default categories for profile and elements ('no category')
     private final long defaultElementCategory;
     private final long defaultProfileCategory;
@@ -28,21 +29,30 @@ public class ConsoleUserInterface implements UserInterface {
         long defaultElementCategory = 0;
         long defaultProfileCategory = 0;
 
+        this.logger = Logger.getInstance();
         this.dbService = dbService;
 
+        logger.write("Initializing Console UI");
+        logger.write("Checking default categories");
         try {
             defaultElementCategory = dbService.getElementCategoryId("no category");
-            if (defaultElementCategory == 0)
+            if (defaultElementCategory == 0) {
+                logger.write("No default element category. Creating a new one");
                 defaultElementCategory = dbService.addElementCategory("no category", "not specified");
+                logger.write("Created element category ID #" + defaultElementCategory);
+            }
         } catch (DBException e) {
-            e.printStackTrace();
+            logger.write("Database exception while working with element categories : " + e.getMessage());
         }
         try {
             defaultProfileCategory = dbService.getProfileCategoryId("no category");
-            if (defaultProfileCategory == 0)
+            if (defaultProfileCategory == 0) {
+                logger.write("No default profile category. Creating a new one");
                 defaultProfileCategory = dbService.addProfileCategory("no category", "not specified");
+                logger.write("Created profile category ID #" + defaultProfileCategory);
+            }
         } catch (DBException e) {
-            e.printStackTrace();
+            logger.write("Database exception while working with profile categories : " + e.getMessage());
         }
 
         this.defaultElementCategory = defaultElementCategory;
@@ -59,7 +69,6 @@ public class ConsoleUserInterface implements UserInterface {
             showMainMenu();
         } catch (IOException e) {
             System.out.println("I/O exception occured: " + e.getMessage());
-            System.out.println("Closing...");
         }
     }
 
@@ -72,44 +81,60 @@ public class ConsoleUserInterface implements UserInterface {
 
         int choice;
 
+        logger.write("Main menu");
+
         do {
             choice = menuUtil.printPagedMenu("Main menu", mainMenu);
             switch (choice) {
                 case 0:
+                    logger.write("Browser selected");
                     showBrowserMenu();
                     break;
                 case 1:
+                    logger.write("Creator selected");
                     showCreatorMenu();
                     break;
                 case 2:
+                    logger.write("DB info selected");
                     dbService.printConnectInfo();
                     System.out.println();
+                    break;
+                default:
+                    System.out.println("Goodbye!");
             }
         } while (0 <= choice && choice < mainMenu.size());
     }
 
     // NIY: Browser menu used to browse and edit saved collection
     private void showBrowserMenu() throws IOException {
+        logger.write("Browser menu, NIY");
         int choice = menuUtil.printPagedMenu("Collection browser", new ArrayList<>());
     }
 
     // Creator menu used to manage profile creation
     private void showCreatorMenu() throws IOException {
+        logger.write("Creator menu");
+
         int choice;
         DiskProfileCreator creator;
         List<String> drives = DiskProfileCreator.getAvailableDrives();
 
         if (drives == null || drives.isEmpty()) {
             System.out.println("CD drives not found.\n");
+            logger.write("No CD drives");
             return;
         }
 
-        do {
-            choice = menuUtil.printPagedMenu("Add new disk profile. Select CD drive", drives);
-        } while (choice < 0 || drives.size() < choice);
-
-        if (!menuUtil.confirmationRequest("Start scan?", true))
+        choice = menuUtil.printPagedMenu("Add new disk profile. Select CD drive", drives);
+        if (choice < 0) {
+            logger.write("No drive selected");
             return;
+        }
+
+        if (!menuUtil.confirmationRequest("Start scan?", true)) {
+            logger.write("Scan canceled");
+            return;
+        }
 
         creator = new DiskProfileCreator(drives.get(choice));
         creator.startScan();
@@ -119,6 +144,7 @@ public class ConsoleUserInterface implements UserInterface {
 
         if (!creator.isScanComplete()) {
             System.out.println("Performing scan. Please wait.");
+            logger.write("Waiting for scan thread");
             creator.waitForRawCreator();
         }
         creator.setProfileUserFields(profileDescription, profileCategory);
@@ -140,10 +166,13 @@ public class ConsoleUserInterface implements UserInterface {
         long categoryId = -1;
         List<String> categoriesMenu = null;
 
+        logger.write((profile ? "Profile" : "Element") + " category menu");
+
         try {
             categoriesMenu = profile ? dbService.getProfileCategories() : dbService.getElementCategories();
         } catch (DBException e) {
-            e.printStackTrace();
+            logger.write("DB exception while getting " + (profile ? "Profile" : "Element") +
+                    " categories : " + e.getMessage());
         }
 
         if (categoriesMenu == null)
@@ -160,7 +189,8 @@ public class ConsoleUserInterface implements UserInterface {
                         dbService.addProfileCategory(categoryName, categoryDesc) :
                         dbService.addElementCategory(categoryName, categoryDesc);
             } catch (DBException e) {
-                e.printStackTrace();
+                logger.write("DB exception while getting " + (profile ? "Profile" : "Element") +
+                        " categories : " + e.getMessage());
             }
         else if (choice < 0)
             categoryId = profile ? defaultProfileCategory : defaultElementCategory;
@@ -170,7 +200,8 @@ public class ConsoleUserInterface implements UserInterface {
                         dbService.getProfileCategoryId(categoriesMenu.get(choice)) :
                         dbService.getElementCategoryId(categoriesMenu.get(choice));
             } catch (DBException e) {
-                e.printStackTrace();
+                logger.write("DB exception while getting " + (profile ? "Profile" : "Element") +
+                        " categories : " + e.getMessage());
             }
 
         return categoryId;
@@ -180,6 +211,8 @@ public class ConsoleUserInterface implements UserInterface {
     private void showEditElementMenu(DiskProfileCreator creator) throws IOException {
         int choice;
         List<String> editElementMenu = new ArrayList<>();
+
+        logger.write("Edit elements menu");
 
         editElementMenu.add("Add/edit description");
         editElementMenu.add("Select category");

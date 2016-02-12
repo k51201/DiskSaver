@@ -1,4 +1,4 @@
-package disksaver.profile;
+package disksaver.creator;
 
 import disksaver.Logger;
 import disksaver.dbservice.DBException;

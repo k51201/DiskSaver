@@ -11,7 +11,7 @@ import org.hibernate.cfg.Configuration;
  */
 public class MySqlDBService extends DBService{
     private static final String hibernate_show_sql = "false";
-    private static final String hibernate_hbm2ddl_auto = "create";
+    private static final String hibernate_hbm2ddl_auto = "update";
 
     @Override
     protected Configuration getConfiguration() {

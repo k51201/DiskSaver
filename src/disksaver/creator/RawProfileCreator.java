@@ -1,7 +1,6 @@
-package disksaver.profile;
+package disksaver.creator;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +11,7 @@ import java.util.List;
  *
  * Used to create raw disk profile on it's own thread
  */
+
 class RawProfileCreator implements Runnable {
     private final File drivePath;
     private List<RawElement> rawElements = new ArrayList<>();

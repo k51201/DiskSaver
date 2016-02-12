@@ -19,14 +19,6 @@ public class Main {
     private static Logger logger = Logger.getInstance();
 
     public static void main(String[] args) {
-        DBService dbService;
-        if (args != null && 0 < args.length && "--mysql".equals(args[0]))
-            dbService = new MySqlDBService();
-        else
-            dbService = new H2DBService();
-
-        UserInterface userInterface = new ConsoleUserInterface(dbService);
-
         File logFile = new File(String.format("log/%1$te%1$tm%1$tY-%1$tH%1$tM%1$tS.log", Calendar.getInstance().getTime()));
         try {
             boolean logFileCreated = logFile.createNewFile();
@@ -38,8 +30,19 @@ public class Main {
         }
         logger.write("Started");
 
+        DBService dbService;
+        if (args != null && 0 < args.length && "--mysql".equals(args[0])) {
+            logger.write("MySQL database selected");
+            dbService = new MySqlDBService();
+        } else {
+            logger.write("H2 database selected");
+            dbService = new H2DBService();
+        }
+
+        UserInterface userInterface = new ConsoleUserInterface(dbService);
         userInterface.initUI();
 
+        logger.write("Closing...");
         dbService.close();
         logger.close();
     }
