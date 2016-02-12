@@ -3,7 +3,7 @@ package disksaver;
 import disksaver.dbservice.DBService;
 import disksaver.dbservice.H2DBService;
 import disksaver.dbservice.MySqlDBService;
-import disksaver.ui.ConsoleUserInterface;
+import disksaver.ui.console.ConsoleUserInterface;
 import disksaver.ui.UserInterface;
 
 import java.io.*;
@@ -20,7 +20,7 @@ public class Main {
 
     public static void main(String[] args) {
         DBService dbService;
-        if ("--mysql".equals(args[0]))
+        if (args != null && 0 < args.length && "--mysql".equals(args[0]))
             dbService = new MySqlDBService();
         else
             dbService = new H2DBService();

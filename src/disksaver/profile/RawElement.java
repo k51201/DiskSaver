@@ -24,6 +24,7 @@ class RawElement {
         this.size = file.length();
         this.directory = file.isDirectory();
         this.save = true;
+        this.setDescription("");
     }
 
     public String getName() {

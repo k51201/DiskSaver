@@ -1,9 +1,11 @@
 package disksaver.dbservice.dao;
 
 import disksaver.dbservice.entity.ProfileCategoryEntity;
+
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,17 @@ public class ProfileCategoryDAO {
     }
 
     public long addCategory(String name, String description) {
+        if (name == null)
+            name = "no name";
+        if (description == null)
+            description = "";
         return (Long) session.save(new ProfileCategoryEntity(name, description));
+    }
+
+    public long getCategoryId(String name) {
+        Criteria criteria = session.createCriteria(ProfileCategoryEntity.class);
+        ProfileCategoryEntity profileCategoryEntity =
+                (ProfileCategoryEntity) criteria.add(Restrictions.eq("name", name)).uniqueResult();
+        return profileCategoryEntity == null ? 0 : profileCategoryEntity.getId();
     }
 }

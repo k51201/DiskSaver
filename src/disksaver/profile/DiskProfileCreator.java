@@ -140,7 +140,7 @@ public class DiskProfileCreator {
     }
 
     public boolean isScanComplete() {
-        return rawCreator.getRawProfile() == null;
+        return rawCreator.getRawProfile() != null;
     }
 
     public void waitForRawCreator() {
@@ -184,7 +184,7 @@ public class DiskProfileCreator {
                 elements.get(i).setSave(save);
     }
 
-    public void saveProfileToDB(DBService dbService) {
+    public void saveProfileToDB(DBService dbService, long defaultElementCategory) {
         RawDiskProfile profile = rawCreator.getRawProfile();
         List<RawElement> elements = rawCreator.getRawElements();
 
@@ -193,7 +193,7 @@ public class DiskProfileCreator {
             profileId = dbService.addDiskProfile(profile.getName(), profile.getVolumeName(), profile.getSize(),
                     profile.getDescription(), profile.getModified(), profile.getBurned(), profile.getCategory());
 
-            System.out.println("Created profile: ID #" + profileId);
+            logger.write("Created profile: ID #" + profileId);
         } catch (DBException e) {
             e.printStackTrace();
         }
@@ -203,16 +203,21 @@ public class DiskProfileCreator {
             for (RawElement element : elements)
                 if (element.isSave())
                     try {
+                        if (element.getDescription() == null)
+                            element.setDescription("");
+                        if (element.getCategory() == 0)
+                            element.setCategory(defaultElementCategory);
                         long elementId = dbService.addElement(element.getName(), element.getPath(),
                                 element.getDescription(), element.getSize(), element.isDirectory(),
                                 element.getCategory(), profileId);
+
                         elementCounter++;
 
-                        System.out.println("Created element: ID #" + elementId);
+                        logger.write("Created element: ID #" + elementId);
                     } catch (DBException e) {
                         e.printStackTrace();
                     }
-            System.out.println("Created " + elementCounter + " elements");
+            logger.write("Created " + elementCounter + " elements.");
         }
     }
 }

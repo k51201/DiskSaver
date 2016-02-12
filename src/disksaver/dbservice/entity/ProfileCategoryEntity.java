@@ -1,5 +1,7 @@
 package disksaver.dbservice.entity;
 
+import com.sun.istack.internal.NotNull;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -17,7 +19,7 @@ public class ProfileCategoryEntity implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name", length = 64, nullable = false)
+    @Column(name = "name", length = 64, nullable = false, unique = true)
     private String name;
 
     @Column(name = "description", length = 2048, nullable = false)
@@ -26,7 +28,7 @@ public class ProfileCategoryEntity implements Serializable{
     public ProfileCategoryEntity() {
     }
 
-    public ProfileCategoryEntity(String name, String description) {
+    public ProfileCategoryEntity(@NotNull String name, @NotNull String description) {
         this.setId(-1);
         this.setName(name);
         this.setDescription(description);

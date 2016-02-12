@@ -1,6 +1,8 @@
 package disksaver.profile;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,9 +38,9 @@ class RawProfileCreator implements Runnable {
 
     // Recursively adds files and directories in rawElements list
     private void createElementsFrom(File path) {
-        if (path.exists() && !path.equals(drivePath))
+        if (path.exists() && !path.equals(drivePath) && !Files.isSymbolicLink(path.toPath()))
             rawElements.add(new RawElement(path, drivePath.getPath().length()));
-        if (path.isDirectory()) {
+        if (path.isDirectory() && !Files.isSymbolicLink(path.toPath())) {
             File[] files = path.listFiles();
             if (files != null)
                 for (File file : files)

@@ -4,6 +4,7 @@ import disksaver.dbservice.entity.ElementCategoryEntity;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +25,9 @@ public class ElementCategoryDAO {
     }
 
     public List<String> getCategories() {
-        List<ElementCategoryEntity> categoriesDataSetList;
         Criteria criteria = session.createCriteria(ElementCategoryEntity.class);
-        categoriesDataSetList = criteria.list();
+        List<ElementCategoryEntity> categoriesDataSetList = criteria.list();
+
         List<String> categories = new ArrayList<>(categoriesDataSetList.size());
         if (!categoriesDataSetList.isEmpty()) {
             categories.addAll(categoriesDataSetList.stream().map(ElementCategoryEntity::getName).collect(Collectors.toList()));
@@ -36,6 +37,17 @@ public class ElementCategoryDAO {
     }
 
     public long addCategory(String name, String description) {
+        if (name == null)
+            name = "no name";
+        if (description == null)
+            description = "";
         return (Long) session.save(new ElementCategoryEntity(name, description));
+    }
+
+    public long getCategoryId(String name) {
+        Criteria criteria = session.createCriteria(ElementCategoryEntity.class);
+        ElementCategoryEntity elementCategoryEntity =
+                (ElementCategoryEntity) criteria.add(Restrictions.eq("name", name)).uniqueResult();
+        return elementCategoryEntity == null ? 0 : elementCategoryEntity.getId();
     }
 }

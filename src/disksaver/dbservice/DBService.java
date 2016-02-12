@@ -4,6 +4,7 @@ import disksaver.dbservice.dao.DiskProfilesDAO;
 import disksaver.dbservice.dao.ElementCategoryDAO;
 import disksaver.dbservice.dao.ElementsDAO;
 import disksaver.dbservice.dao.ProfileCategoryDAO;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -43,11 +44,13 @@ public abstract class DBService {
         try {
             Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
+
             Connection connection = ((SessionImplementor) session).getJdbcConnectionAccess().obtainConnection();
             System.out.println("DB name: " + connection.getMetaData().getDatabaseProductName());
             System.out.println("DB version: " + connection.getMetaData().getDatabaseProductVersion());
             System.out.println("Driver: " + connection.getMetaData().getDriverName());
             System.out.println("Autocommit: " + connection.getAutoCommit());
+
             transaction.commit();
             session.close();
         } catch (SQLException e) {
@@ -143,14 +146,42 @@ public abstract class DBService {
             Transaction transaction = session.beginTransaction();
 
             ElementsDAO elementsDAO = new ElementsDAO(session);
-            long id = elementsDAO.addElement(name, path, description, size, directory, categoryId, profileId);
-
             DiskProfilesDAO diskProfilesDAO = new DiskProfilesDAO(session);
+
+            long id = elementsDAO.addElement(name, path, description, size, directory, categoryId, profileId);
             diskProfilesDAO.addElementToProfile(profileId, id);
 
             transaction.commit();
             session.close();
             return id;
+        } catch (HibernateException e) {
+            throw new DBException(e);
+        }
+    }
+
+    public long getProfileCategoryId(String name) throws DBException {
+        try {
+            Session session = sessionFactory.openSession();
+
+            ProfileCategoryDAO profileCategoryDAO = new ProfileCategoryDAO(session);
+            long categoryId = profileCategoryDAO.getCategoryId(name);
+
+            session.close();
+            return categoryId;
+        } catch (HibernateException e) {
+            throw new DBException(e);
+        }
+    }
+
+    public long getElementCategoryId(String name) throws DBException {
+        try {
+            Session session = sessionFactory.openSession();
+
+            ProfileCategoryDAO profileCategoryDAO = new ProfileCategoryDAO(session);
+            long categoryId = profileCategoryDAO.getCategoryId(name);
+
+            session.close();
+            return categoryId;
         } catch (HibernateException e) {
             throw new DBException(e);
         }

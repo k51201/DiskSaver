@@ -1,5 +1,7 @@
 package disksaver.dbservice.entity;
 
+import com.sun.istack.internal.NotNull;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,27 +31,27 @@ public class DiskProfilesEntity implements Serializable{
     @Column(name = "size")
     private long size;
 
-    @Column(name = "description", length = 2048, nullable = false)
+    @Column(name = "description", length = 2048)
     private String description;
 
     @Column(name = "modified", nullable = false)
     private Date modified;
 
-    @Column(name = "burned", nullable = false)
+    @Column(name = "burned")
     private Date burned;
 
-    @ManyToOne
-    @JoinColumn (name = "category", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category", referencedColumnName = "id")
     private ProfileCategoryEntity category;
 
-    @OneToMany(mappedBy = "diskProfile", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "diskProfile", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ElementsEntity> elements = new ArrayList<>();
 
     public DiskProfilesEntity() {
     }
 
-    public DiskProfilesEntity(String name, String volumeName, long size, String description,
-                              Date modified, Date burned, ProfileCategoryEntity category) {
+    public DiskProfilesEntity(@NotNull String name, @NotNull String volumeName, long size, String description,
+                              @NotNull Date modified, Date burned, ProfileCategoryEntity category) {
         this.setId(-1);
         this.setName(name);
         this.setVolumeName(volumeName);

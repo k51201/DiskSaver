@@ -1,5 +1,7 @@
 package disksaver.dbservice.entity;
 
+import com.sun.istack.internal.NotNull;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -23,7 +25,7 @@ public class ElementsEntity implements Serializable{
     @Column(name = "path", length = 256, nullable = false)
     private String path;
 
-    @Column(name = "description", length = 2048, nullable = false)
+    @Column(name = "description", length = 2048)
     private String description;
 
     @Column(name = "size")
@@ -32,18 +34,18 @@ public class ElementsEntity implements Serializable{
     @Column(name = "directory")
     private boolean directory;
 
-    @ManyToOne
-    @JoinColumn (name = "category", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category", referencedColumnName = "id")
     private ElementCategoryEntity category;
 
-    @ManyToOne
-    @JoinColumn (name = "disk_profile", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "disk_profile", referencedColumnName = "id")
     private DiskProfilesEntity diskProfile;
 
     public ElementsEntity() {
     }
 
-    public ElementsEntity(String name, String path, String description, long size,
+    public ElementsEntity(@NotNull String name, @NotNull String path, String description, long size,
                           boolean directory, ElementCategoryEntity category, DiskProfilesEntity diskProfile) {
         this.setId(-1);
         this.setName(name);
