@@ -7,24 +7,19 @@ import java.util.Date;
  */
 
 class RawDiskProfile {
-    private final String volumeName;
+    private final String name;
     private final long size;
     private final Date modified;
     private final Date burned;
 
-    private String name;
     private String description;
     private long category;
 
-    public RawDiskProfile(String volumeName, long size, Date burned) {
-        this.volumeName = volumeName;
+    public RawDiskProfile(String name, long size, Date burned) {
+        this.name = name;
         this.size = size;
         this.burned = burned;
         this.modified = new Date();
-    }
-
-    public String getVolumeName() {
-        return volumeName;
     }
 
     public long getSize() {
@@ -41,10 +36,6 @@ class RawDiskProfile {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription() {

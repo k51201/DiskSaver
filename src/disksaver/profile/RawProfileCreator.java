@@ -29,11 +29,11 @@ class RawProfileCreator implements Runnable {
     @Override
     public void run() {
         createElementsFrom(drivePath);
-        String volumeName = DiskProfileCreator.getVolumeName(drivePath);
+        String name = DiskProfileCreator.getVolumeName(drivePath);
         long size = drivePath.getTotalSpace();
         Date burned = new Date(drivePath.lastModified());
 
-        rawProfile = new RawDiskProfile(volumeName, size, burned);
+        rawProfile = new RawDiskProfile(name, size, burned);
     }
 
     // Recursively adds files and directories in rawElements list

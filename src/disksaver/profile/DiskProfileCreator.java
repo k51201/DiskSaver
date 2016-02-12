@@ -53,7 +53,7 @@ public class DiskProfileCreator {
         if (runningInUnix)
             return getVolumeNameForUnix(drivePath);
         else
-            return FileSystemView.getFileSystemView().getSystemDisplayName(drivePath);
+            return FileSystemView.getFileSystemView().getSystemDisplayName(drivePath).trim();
     }
 
     // If we're in *nix, then reading /etc/mtab
@@ -102,7 +102,7 @@ public class DiskProfileCreator {
             Process p = Runtime.getRuntime().exec("volname " + devicePath);
             p.waitFor();
             try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-                volumeName = br.readLine();
+                volumeName = br.readLine().trim();
             } catch (IOException e) {
                 logger.write("I/O exception while reading volname output : " + e.getMessage());
             }
@@ -159,8 +159,7 @@ public class DiskProfileCreator {
         return rawCreator.getRawElements().get(index).isDirectory();
     }
 
-    public void setProfileUserFields(String profileName, String profileDescription, long profileCategory) {
-        rawCreator.getRawProfile().setName(profileName);
+    public void setProfileUserFields(String profileDescription, long profileCategory) {
         rawCreator.getRawProfile().setDescription(profileDescription);
         rawCreator.getRawProfile().setCategory(profileCategory);
     }
@@ -190,7 +189,7 @@ public class DiskProfileCreator {
 
         long profileId = -1;
         try {
-            profileId = dbService.addDiskProfile(profile.getName(), profile.getVolumeName(), profile.getSize(),
+            profileId = dbService.addDiskProfile(profile.getName(), profile.getSize(),
                     profile.getDescription(), profile.getModified(), profile.getBurned(), profile.getCategory());
 
             logger.write("Created profile: ID #" + profileId);

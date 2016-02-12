@@ -22,18 +22,16 @@ public class DiskProfilesDAO {
         return session.get(DiskProfilesEntity.class, id);
     }
 
-    public long addProfile(String name, String volumeName, long size, String description,
+    public long addProfile(String name, long size, String description,
                            Date modified, Date burned, long categoryId) {
         ProfileCategoryEntity profileCategory = session.load(ProfileCategoryEntity.class, categoryId);
         if (name == null)
             name = "";
-        if (volumeName == null)
-            volumeName = "";
         if (modified == null)
             modified = new Date();
 
         return (Long) session.save(
-                new DiskProfilesEntity(name, volumeName, size, description, modified, burned, profileCategory)
+                new DiskProfilesEntity(name, size, description, modified, burned, profileCategory)
         );
     }
 

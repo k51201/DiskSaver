@@ -122,14 +122,14 @@ public abstract class DBService {
         }
     }
 
-    public long addDiskProfile(String name, String volumeName, long size, String description,
+    public long addDiskProfile(String name, long size, String description,
                                Date modified, Date burned, long categoryId) throws DBException {
         try {
             Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
 
             DiskProfilesDAO diskProfilesDAO = new DiskProfilesDAO(session);
-            long id = diskProfilesDAO.addProfile(name, volumeName, size, description, modified, burned, categoryId);
+            long id = diskProfilesDAO.addProfile(name, size, description, modified, burned, categoryId);
 
             transaction.commit();
             session.close();

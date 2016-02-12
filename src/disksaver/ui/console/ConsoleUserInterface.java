@@ -114,7 +114,6 @@ public class ConsoleUserInterface implements UserInterface {
         creator = new DiskProfileCreator(drives.get(choice));
         creator.startScan();
 
-        String profileName = menuUtil.askString("Name of this disk");
         long profileCategory = showCategoryMenu(true);
         String profileDescription = menuUtil.askString("Description for this disk profile");
 
@@ -122,7 +121,7 @@ public class ConsoleUserInterface implements UserInterface {
             System.out.println("Performing scan. Please wait.");
             creator.waitForRawCreator();
         }
-        creator.setProfileUserFields(profileName, profileDescription, profileCategory);
+        creator.setProfileUserFields(profileDescription, profileCategory);
         System.out.println("Scan complete");
 
         if (menuUtil.confirmationRequest("Do you want to edit elements before saving?", true))

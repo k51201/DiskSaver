@@ -25,9 +25,6 @@ public class DiskProfilesEntity implements Serializable{
     @Column(name = "name", length = 64, nullable = false)
     private String name;
 
-    @Column(name = "volume_name", length = 64, nullable = false)
-    private String volumeName;
-
     @Column(name = "size")
     private long size;
 
@@ -50,11 +47,10 @@ public class DiskProfilesEntity implements Serializable{
     public DiskProfilesEntity() {
     }
 
-    public DiskProfilesEntity(@NotNull String name, @NotNull String volumeName, long size, String description,
+    public DiskProfilesEntity(@NotNull String name, long size, String description,
                               @NotNull Date modified, Date burned, ProfileCategoryEntity category) {
         this.setId(-1);
         this.setName(name);
-        this.setVolumeName(volumeName);
         this.setSize(size);
         this.setDescription(description);
         this.setModified(modified);
@@ -76,14 +72,6 @@ public class DiskProfilesEntity implements Serializable{
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getVolumeName() {
-        return volumeName;
-    }
-
-    public void setVolumeName(String volumeName) {
-        this.volumeName = volumeName;
     }
 
     public long getSize() {
