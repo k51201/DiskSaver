@@ -9,7 +9,7 @@ import java.util.Calendar;
  * Logging service.
  */
 public class Logger {
-    private static Logger loggerInstance = new Logger();
+    private static final Logger loggerInstance = new Logger();
 
     private PrintWriter out;
 

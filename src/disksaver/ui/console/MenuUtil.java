@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class MenuUtil {
-    private static MenuUtil instance = new MenuUtil();
+    private static final MenuUtil instance = new MenuUtil();
 
     // Reader for user answers
     private BufferedReader in;

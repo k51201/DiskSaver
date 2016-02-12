@@ -23,8 +23,8 @@ import java.util.List;
  * Created by vampa on 08.02.2016.
  */
 public class H2DBService extends DBService {
-    private static final String hibernate_show_sql = "true";
-    private static final String hibernate_hbm2ddl_auto = "create";
+    private static final String hibernate_show_sql = "false";
+    private static final String hibernate_hbm2ddl_auto = "update";
 
     @Override
     protected Configuration getConfiguration() {

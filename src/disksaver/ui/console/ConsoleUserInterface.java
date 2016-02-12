@@ -68,7 +68,7 @@ public class ConsoleUserInterface implements UserInterface {
             menuUtil.setIn(cin);
             showMainMenu();
         } catch (IOException e) {
-            System.out.println("I/O exception occured: " + e.getMessage());
+            System.out.println("I/O exception occurred: " + e.getMessage());
         }
     }
 

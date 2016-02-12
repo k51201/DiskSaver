@@ -16,7 +16,7 @@ import java.util.Calendar;
  */
 public class Main {
 
-    private static Logger logger = Logger.getInstance();
+    private static final Logger logger = Logger.getInstance();
 
     public static void main(String[] args) {
         File logFile = new File(String.format("log/%1$te%1$tm%1$tY-%1$tH%1$tM%1$tS.log", Calendar.getInstance().getTime()));
