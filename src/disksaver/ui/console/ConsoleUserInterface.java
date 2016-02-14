@@ -228,17 +228,17 @@ public class ConsoleUserInterface implements UserInterface {
 
                 int editChoice = menuUtil.printPagedMenu("Edit element " + elementPathList.get(choice), editElementMenu);
                 switch (editChoice) {
-                    case 1:
+                    case 0:
                         creator.setElementDescription(choice, menuUtil.askString("Description"));
                         break;
-                    case 2:
+                    case 1:
                         creator.setElementCategory(choice, showCategoryMenu(false));
                         break;
-                    case 3:
+                    case 2:
                         creator.toggleSavingElement(
                                 choice, menuUtil.confirmationRequest("Do you want to save this element?", true));
                         break;
-                    case 4:
+                    case 3:
                         creator.toggleSavingIncludedElements(
                                 choice, menuUtil.confirmationRequest("Do you want to save included elements?", true));
                 }

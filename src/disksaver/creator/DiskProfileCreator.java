@@ -65,7 +65,7 @@ public class DiskProfileCreator {
             String line = "";
             while (line != null) {
                 line = mtabReader.readLine();
-                if (line != null && line.contains("iso9660")) {
+                if (line != null && (line.contains("iso9660") || line.contains("udf"))) {
                     String opticalDevice = line.split("\\s")[1];
                     availableDevices.add(opticalDevice);
                     logger.write("Found device: " + opticalDevice);
