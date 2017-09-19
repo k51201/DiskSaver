@@ -1,9 +1,9 @@
-package disksaver.dbservice;
+package ru.vampa.disksaver.dbservice;
 
-import disksaver.dbservice.entity.DiskProfilesEntity;
-import disksaver.dbservice.entity.ElementCategoryEntity;
-import disksaver.dbservice.entity.ElementsEntity;
-import disksaver.dbservice.entity.ProfileCategoryEntity;
+import ru.vampa.disksaver.dbservice.entity.DiskProfilesEntity;
+import ru.vampa.disksaver.dbservice.entity.ElementCategoryEntity;
+import ru.vampa.disksaver.dbservice.entity.ElementsEntity;
+import ru.vampa.disksaver.dbservice.entity.ProfileCategoryEntity;
 import org.hibernate.cfg.Configuration;
 
 /**

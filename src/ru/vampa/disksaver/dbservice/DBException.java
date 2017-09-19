@@ -1,4 +1,4 @@
-package disksaver.dbservice;
+package ru.vampa.disksaver.dbservice;
 
 import org.hibernate.HibernateException;
 

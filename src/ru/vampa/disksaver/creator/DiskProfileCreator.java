@@ -1,8 +1,8 @@
-package disksaver.creator;
+package ru.vampa.disksaver.creator;
 
-import disksaver.Logger;
-import disksaver.dbservice.DBException;
-import disksaver.dbservice.DBService;
+import ru.vampa.disksaver.Logger;
+import ru.vampa.disksaver.dbservice.DBException;
+import ru.vampa.disksaver.dbservice.DBService;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.*;

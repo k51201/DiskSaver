@@ -1,4 +1,4 @@
-package disksaver;
+package ru.vampa.disksaver;
 
 import java.io.PrintWriter;
 import java.util.Calendar;

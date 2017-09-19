@@ -1,11 +1,9 @@
-package disksaver.dbservice;
+package ru.vampa.disksaver.dbservice;
 
-import disksaver.dbservice.dao.ElementCategoryDAO;
-import disksaver.dbservice.dao.ProfileCategoryDAO;
-import disksaver.dbservice.entity.DiskProfilesEntity;
-import disksaver.dbservice.entity.ElementCategoryEntity;
-import disksaver.dbservice.entity.ElementsEntity;
-import disksaver.dbservice.entity.ProfileCategoryEntity;
+import ru.vampa.disksaver.dbservice.entity.DiskProfilesEntity;
+import ru.vampa.disksaver.dbservice.entity.ElementCategoryEntity;
+import ru.vampa.disksaver.dbservice.entity.ElementsEntity;
+import ru.vampa.disksaver.dbservice.entity.ProfileCategoryEntity;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,10 +12,6 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.service.ServiceRegistry;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 
 /**
  * Created by vampa on 08.02.2016.

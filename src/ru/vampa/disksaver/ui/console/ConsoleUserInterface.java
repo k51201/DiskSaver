@@ -1,10 +1,10 @@
-package disksaver.ui.console;
+package ru.vampa.disksaver.ui.console;
 
-import disksaver.Logger;
-import disksaver.creator.DiskProfileCreator;
-import disksaver.dbservice.DBException;
-import disksaver.dbservice.DBService;
-import disksaver.ui.UserInterface;
+import ru.vampa.disksaver.Logger;
+import ru.vampa.disksaver.creator.DiskProfileCreator;
+import ru.vampa.disksaver.dbservice.DBException;
+import ru.vampa.disksaver.dbservice.DBService;
+import ru.vampa.disksaver.ui.UserInterface;
 
 import java.io.BufferedReader;
 import java.io.IOException;

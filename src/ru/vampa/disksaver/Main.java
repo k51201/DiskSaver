@@ -1,10 +1,10 @@
-package disksaver;
+package ru.vampa.disksaver;
 
-import disksaver.dbservice.DBService;
-import disksaver.dbservice.H2DBService;
-import disksaver.dbservice.MySqlDBService;
-import disksaver.ui.console.ConsoleUserInterface;
-import disksaver.ui.UserInterface;
+import ru.vampa.disksaver.dbservice.DBService;
+import ru.vampa.disksaver.dbservice.H2DBService;
+import ru.vampa.disksaver.dbservice.MySqlDBService;
+import ru.vampa.disksaver.ui.console.ConsoleUserInterface;
+import ru.vampa.disksaver.ui.UserInterface;
 
 import java.io.*;
 import java.util.Calendar;

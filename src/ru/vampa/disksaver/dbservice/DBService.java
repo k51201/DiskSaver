@@ -1,9 +1,9 @@
-package disksaver.dbservice;
+package ru.vampa.disksaver.dbservice;
 
-import disksaver.dbservice.dao.DiskProfilesDAO;
-import disksaver.dbservice.dao.ElementCategoryDAO;
-import disksaver.dbservice.dao.ElementsDAO;
-import disksaver.dbservice.dao.ProfileCategoryDAO;
+import ru.vampa.disksaver.dbservice.dao.DiskProfilesDAO;
+import ru.vampa.disksaver.dbservice.dao.ElementCategoryDAO;
+import ru.vampa.disksaver.dbservice.dao.ElementsDAO;
+import ru.vampa.disksaver.dbservice.dao.ProfileCategoryDAO;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;

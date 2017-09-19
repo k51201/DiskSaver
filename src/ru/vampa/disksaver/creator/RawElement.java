@@ -1,4 +1,4 @@
-package disksaver.creator;
+package ru.vampa.disksaver.creator;
 
 import java.io.File;
 

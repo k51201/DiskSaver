@@ -1,4 +1,4 @@
-package disksaver.dbservice.entity;
+package ru.vampa.disksaver.dbservice.entity;
 
 import com.sun.istack.internal.NotNull;
 

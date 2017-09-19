@@ -1,4 +1,4 @@
-package disksaver.ui;
+package ru.vampa.disksaver.ui;
 
 /**
  * Created by vampa on 09.02.2016.

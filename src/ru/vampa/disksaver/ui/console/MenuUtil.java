@@ -1,4 +1,4 @@
-package disksaver.ui.console;
+package ru.vampa.disksaver.ui.console;
 
 import java.io.BufferedReader;
 import java.io.IOException;
