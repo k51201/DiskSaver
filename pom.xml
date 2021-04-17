@@ -4,22 +4,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>DiskSaver</groupId>
-    <artifactId>DiskSaver</artifactId>
-    <version>0.1</version>
+    <groupId>ru.vampa</groupId>
+    <artifactId>disk-saver</artifactId>
+    <version>0.2-SNAPSHOT</version>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -29,7 +29,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>main.Main</mainClass>
+                            <mainClass>ru.vampa.disksaver.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -38,9 +38,9 @@
     </build>
 
     <properties>
-        <com.h2database.h2.version>1.4.191</com.h2database.h2.version>
-        <mysql.mysql-connector-java.version>5.1.38</mysql.mysql-connector-java.version>
-        <org.hibernate.hibernate-core.version>5.0.7.Final</org.hibernate.hibernate-core.version>
+        <com.h2database.h2.version>1.4.200</com.h2database.h2.version>
+        <mysql.mysql-connector-java.version>8.0.23</mysql.mysql-connector-java.version>
+        <org.hibernate.hibernate-core.version>5.4.30.Final</org.hibernate.hibernate-core.version>
     </properties>
 
     <dependencies>
