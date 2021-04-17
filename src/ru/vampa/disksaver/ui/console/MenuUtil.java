@@ -10,49 +10,43 @@ public class MenuUtil {
     // Reader for user answers
     private BufferedReader in;
 
-    private MenuUtil() {
-    }
+    private MenuUtil() {}
 
     public static MenuUtil getInstance() {
         return instance;
     }
 
     // Simply asks a question (at parameter) and returns answer
-    String askString(String requestText) throws IOException {
+    public String askString(String requestText) throws IOException {
         System.out.print(requestText + " > ");
-        String answer = in.readLine();
+        final String answer = in.readLine();
         return answer != null ? answer : "";
     }
 
     // Prints question and accepts [y,n] or, in case of pressing <Enter>, returns defaultAnswer
-    boolean confirmationRequest(String question, boolean defaultAnswer) throws IOException {
+    public boolean confirmationRequest(String question, boolean defaultAnswer) throws IOException {
         do {
             System.out.print(question + " (" + (defaultAnswer ? "Y/n" : "y/N") + ") > ");
-            String answer = in.readLine();
+            final String answer = in.readLine();
             switch (answer) {
-                case "y":
-                case "Y":
-                case "yes":
-                case "YES":
-                case "Yes":
+                case "y", "Y", "yes", "YES", "Yes" -> {
                     System.out.println();
                     return true;
-                case "n":
-                case "N":
-                case "no":
-                case "NO":
-                case "No":
+                }
+                case "n", "N", "no", "NO", "No" -> {
                     System.out.println();
                     return false;
-                case "":
+                }
+                case "" -> {
                     System.out.println();
                     return defaultAnswer;
+                }
             }
-        } while (true);
+        } while(true);
     }
 
     // See main method below. This method used to not specify start page (which always 0)
-    int printPagedMenu(String title, List<String> entries) throws IOException {
+    public int printPagedMenu(String title, List<String> entries) throws IOException {
         return printPagedMenu(title, entries, 0);
     }
 
@@ -97,18 +91,9 @@ public class MenuUtil {
 
         do {
             System.out.print("Select -> ");
-            String input;
-            input = in.readLine();
+            final String input = in.readLine();
             switch (input) {
-                case "1":
-                case "2":
-                case "3":
-                case "4":
-                case "5":
-                case "6":
-                case "7":
-                case "8":
-                case "9":
+                case "1": case "2": case "3": case "4": case "5": case "6": case "7": case "8": case "9":
                     choice = 10 * page + input.charAt(0) - 49;
                     break;
                 case "0":
@@ -122,11 +107,10 @@ public class MenuUtil {
                     if (hasPrevPage)
                         choice = printPagedMenu(title, entries, page - 1);
                     break;
-                case "q":
-                case "Q":
+                case "q": case "Q":
                     choice = -1;
             }
-        } while (choice < -1 || entries.size() <= choice);
+        } while(choice < -1 || entries.size() <= choice);
 
         System.out.println();
 

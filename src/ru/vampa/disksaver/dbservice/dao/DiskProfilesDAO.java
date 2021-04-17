@@ -12,7 +12,7 @@ import java.util.Date;
  * Created by vampa on 08.02.2016.
  */
 public class DiskProfilesDAO {
-    private Session session;
+    private final Session session;
 
     public DiskProfilesDAO(Session session) {
         this.session = session;

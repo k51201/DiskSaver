@@ -1,17 +1,10 @@
 package ru.vampa.disksaver.dbservice;
 
+import org.hibernate.cfg.Configuration;
 import ru.vampa.disksaver.dbservice.entity.DiskProfilesEntity;
 import ru.vampa.disksaver.dbservice.entity.ElementCategoryEntity;
 import ru.vampa.disksaver.dbservice.entity.ElementsEntity;
 import ru.vampa.disksaver.dbservice.entity.ProfileCategoryEntity;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.service.ServiceRegistry;
 
 /**
  * Created by vampa on 08.02.2016.
@@ -22,7 +15,7 @@ public class H2DBService extends DBService {
 
     @Override
     protected Configuration getConfiguration() {
-        Configuration configuration = new Configuration();
+        final var configuration = new Configuration();
 
         configuration.addAnnotatedClass(DiskProfilesEntity.class);
         configuration.addAnnotatedClass(ProfileCategoryEntity.class);

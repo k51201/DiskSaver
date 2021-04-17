@@ -1,8 +1,9 @@
 package ru.vampa.disksaver.dbservice.entity;
 
-import com.sun.istack.internal.NotNull;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "disk_profiles")
 public class DiskProfilesEntity implements Serializable{
+    @Serial
     private static final long serialVersionUID = 2016020801L;
 
     @Id
@@ -44,8 +46,7 @@ public class DiskProfilesEntity implements Serializable{
     @OneToMany(mappedBy = "diskProfile", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ElementsEntity> elements = new ArrayList<>();
 
-    public DiskProfilesEntity() {
-    }
+    public DiskProfilesEntity() {}
 
     public DiskProfilesEntity(@NotNull String name, long size, String description,
                               @NotNull Date modified, Date burned, ProfileCategoryEntity category) {

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * Created by vampa on 08.02.2016.
  */
 public class ProfileCategoryDAO {
-    private Session session;
+    private final Session session;
 
     public ProfileCategoryDAO(Session session) {
         this.session = session;

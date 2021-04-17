@@ -3,11 +3,8 @@ package ru.vampa.disksaver;
 import ru.vampa.disksaver.dbservice.DBService;
 import ru.vampa.disksaver.dbservice.H2DBService;
 import ru.vampa.disksaver.dbservice.MySqlDBService;
-import ru.vampa.disksaver.ui.console.ConsoleUserInterface;
 import ru.vampa.disksaver.ui.UserInterface;
-
-import java.io.*;
-import java.util.Calendar;
+import ru.vampa.disksaver.ui.console.ConsoleUserInterface;
 
 /**
  * Created by vampa on 06.02.2016.

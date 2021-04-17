@@ -11,7 +11,7 @@ import org.hibernate.Session;
  * Created by vampa on 08.02.2016.
  */
 public class ElementsDAO {
-    private Session session;
+    private final Session session;
 
     public ElementsDAO(Session session) {
         this.session = session;

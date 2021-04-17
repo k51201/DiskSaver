@@ -1,10 +1,10 @@
 package ru.vampa.disksaver.dbservice;
 
+import org.hibernate.cfg.Configuration;
 import ru.vampa.disksaver.dbservice.entity.DiskProfilesEntity;
 import ru.vampa.disksaver.dbservice.entity.ElementCategoryEntity;
 import ru.vampa.disksaver.dbservice.entity.ElementsEntity;
 import ru.vampa.disksaver.dbservice.entity.ProfileCategoryEntity;
-import org.hibernate.cfg.Configuration;
 
 /**
  * Created by vampa on 09.02.2016.
@@ -15,7 +15,7 @@ public class MySqlDBService extends DBService{
 
     @Override
     protected Configuration getConfiguration() {
-        Configuration configuration = new Configuration();
+        final var configuration = new Configuration();
 
         configuration.addAnnotatedClass(DiskProfilesEntity.class);
         configuration.addAnnotatedClass(ProfileCategoryEntity.class);

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * Created by vampa on 08.02.2016.
  */
 public class ElementCategoryDAO {
-    private Session session;
+    private final Session session;
 
     public ElementCategoryDAO(Session session) {
         this.session = session;

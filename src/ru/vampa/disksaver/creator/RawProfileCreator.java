@@ -14,7 +14,7 @@ import java.util.List;
 
 class RawProfileCreator implements Runnable {
     private final File drivePath;
-    private List<RawElement> rawElements = new ArrayList<>();
+    private final List<RawElement> rawElements = new ArrayList<>();
 
     private RawDiskProfile rawProfile;
 

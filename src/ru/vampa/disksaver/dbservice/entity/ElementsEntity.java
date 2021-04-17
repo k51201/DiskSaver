@@ -1,8 +1,9 @@
 package ru.vampa.disksaver.dbservice.entity;
 
-import com.sun.istack.internal.NotNull;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -12,6 +13,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "elements")
 public class ElementsEntity implements Serializable{
+    @Serial
     private static final long serialVersionUID = 2016020803L;
 
     @Id
@@ -42,8 +44,7 @@ public class ElementsEntity implements Serializable{
     @JoinColumn(name = "disk_profile", referencedColumnName = "id")
     private DiskProfilesEntity diskProfile;
 
-    public ElementsEntity() {
-    }
+    public ElementsEntity() {}
 
     public ElementsEntity(@NotNull String name, @NotNull String path, String description, long size,
                           boolean directory, ElementCategoryEntity category, DiskProfilesEntity diskProfile) {

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * Class, that provides creating of CD profiles.
  */
 public class DiskProfileCreator {
-    private static Logger logger = Logger.getInstance();
+    private static final Logger logger = Logger.getInstance();
     private static boolean runningInUnix;
 
     private final Thread rawCreatorThread;
@@ -150,9 +150,9 @@ public class DiskProfileCreator {
     }
 
     public List<String> getElementsPathList() {
-        List<String> elementsPathList = new ArrayList<>();
-        elementsPathList.addAll(rawCreator.getRawElements().stream().map(RawElement::getPath).collect(Collectors.toList()));
-        return elementsPathList;
+        return rawCreator.getRawElements().stream()
+                .map(RawElement::getPath)
+                .collect(Collectors.toList());
     }
 
     public boolean isElementADirectory(int index) {
