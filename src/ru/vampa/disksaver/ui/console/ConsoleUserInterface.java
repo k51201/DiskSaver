@@ -22,28 +22,33 @@ public class ConsoleUserInterface implements UserInterface {
     private final DBService dbService;
     private final Logger logger;
     // Default categories for profile and elements ('no category')
-    private final long defaultElementCategory;
-    private final long defaultProfileCategory;
+    private long defaultElementCategory;
+    private long defaultProfileCategory;
 
     public ConsoleUserInterface(DBService dbService) {
-        long defaultElementCategory = 0;
-        long defaultProfileCategory = 0;
-
         this.logger = Logger.getInstance();
         this.dbService = dbService;
 
+        this.menuUtil = MenuUtil.getInstance();
+    }
+
+    // Entry point. Starting UI
+    @Override
+    public void initUI() {
         logger.write("Initializing Console UI");
         logger.write("Checking default categories");
-        try {
-            defaultElementCategory = dbService.getElementCategoryId("no category");
-            if (defaultElementCategory == 0) {
-                logger.write("No default element category. Creating a new one");
-                defaultElementCategory = dbService.addElementCategory("no category", "not specified");
-                logger.write("Created element category ID #" + defaultElementCategory);
-            }
-        } catch (DBException e) {
-            logger.write("Database exception while working with element categories : " + e.getMessage());
+        initDefaultElemCat();
+        initDefaultProfCat();
+
+        try (BufferedReader cin = new BufferedReader(new InputStreamReader(System.in))) {
+            menuUtil.setIn(cin);
+            showMainMenu();
+        } catch (IOException e) {
+            System.out.println("I/O exception occurred: " + e.getMessage());
         }
+    }
+
+    private void initDefaultProfCat() {
         try {
             defaultProfileCategory = dbService.getProfileCategoryId("no category");
             if (defaultProfileCategory == 0) {
@@ -54,21 +59,18 @@ public class ConsoleUserInterface implements UserInterface {
         } catch (DBException e) {
             logger.write("Database exception while working with profile categories : " + e.getMessage());
         }
-
-        this.defaultElementCategory = defaultElementCategory;
-        this.defaultProfileCategory = defaultProfileCategory;
-
-        this.menuUtil = MenuUtil.getInstance();
     }
 
-    // Entry point. Starting UI
-    @Override
-    public void initUI() {
-        try (BufferedReader cin = new BufferedReader(new InputStreamReader(System.in))) {
-            menuUtil.setIn(cin);
-            showMainMenu();
-        } catch (IOException e) {
-            System.out.println("I/O exception occurred: " + e.getMessage());
+    private void initDefaultElemCat() {
+        try {
+            defaultElementCategory = dbService.getElementCategoryId("no category");
+            if (defaultElementCategory == 0) {
+                logger.write("No default element category. Creating a new one");
+                defaultElementCategory = dbService.addElementCategory("no category", "not specified");
+                logger.write("Created element category ID #" + defaultElementCategory);
+            }
+        } catch (DBException e) {
+            logger.write("Database exception while working with element categories : " + e.getMessage());
         }
     }
 
@@ -86,21 +88,20 @@ public class ConsoleUserInterface implements UserInterface {
         do {
             choice = menuUtil.printPagedMenu("Main menu", mainMenu);
             switch (choice) {
-                case 0:
+                case 0 -> {
                     logger.write("Browser selected");
                     showBrowserMenu();
-                    break;
-                case 1:
+                }
+                case 1 -> {
                     logger.write("Creator selected");
                     showCreatorMenu();
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     logger.write("DB info selected");
                     dbService.printConnectInfo();
                     System.out.println();
-                    break;
-                default:
-                    System.out.println("Goodbye!");
+                }
+                default -> System.out.println("Goodbye!");
             }
         } while (0 <= choice && choice < mainMenu.size());
     }
@@ -220,7 +221,7 @@ public class ConsoleUserInterface implements UserInterface {
 
         List<String> elementPathList = creator.getElementsPathList();
         do {
-            choice = menuUtil.printPagedMenu("Edit elements. Select \'back\' to save", elementPathList);
+            choice = menuUtil.printPagedMenu("Edit elements. Select 'back' to save", elementPathList);
 
             if (0 <= choice) {
                 if (creator.isElementADirectory(choice))
@@ -228,19 +229,12 @@ public class ConsoleUserInterface implements UserInterface {
 
                 int editChoice = menuUtil.printPagedMenu("Edit element " + elementPathList.get(choice), editElementMenu);
                 switch (editChoice) {
-                    case 0:
-                        creator.setElementDescription(choice, menuUtil.askString("Description"));
-                        break;
-                    case 1:
-                        creator.setElementCategory(choice, showCategoryMenu(false));
-                        break;
-                    case 2:
-                        creator.toggleSavingElement(
-                                choice, menuUtil.confirmationRequest("Do you want to save this element?", true));
-                        break;
-                    case 3:
-                        creator.toggleSavingIncludedElements(
-                                choice, menuUtil.confirmationRequest("Do you want to save included elements?", true));
+                    case 0 -> creator.setElementDescription(choice, menuUtil.askString("Description"));
+                    case 1 -> creator.setElementCategory(choice, showCategoryMenu(false));
+                    case 2 -> creator.toggleSavingElement(
+                            choice, menuUtil.confirmationRequest("Do you want to save this element?", true));
+                    case 3 -> creator.toggleSavingIncludedElements(
+                            choice, menuUtil.confirmationRequest("Do you want to save included elements?", true));
                 }
 
                 if (creator.isElementADirectory(choice))
