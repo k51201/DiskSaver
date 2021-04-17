@@ -15,22 +15,12 @@ import java.util.Calendar;
  * Main.
  */
 public class Main {
-
     private static final Logger logger = Logger.getInstance();
 
     public static void main(String[] args) {
-        File logFile = new File(String.format("log/%1$te%1$tm%1$tY-%1$tH%1$tM%1$tS.log", Calendar.getInstance().getTime()));
-        try {
-            boolean logFileCreated = logFile.createNewFile();
-            logger.setOut(new PrintWriter(logFile));
-            if (logFileCreated)
-                logger.write("Log file created");
-        } catch (IOException e) {
-            System.out.println("Unable to create log file : " + e.getMessage());
-        }
         logger.write("Started");
 
-        DBService dbService;
+        final DBService dbService;
         if (args != null && 0 < args.length && "--mysql".equals(args[0])) {
             logger.write("MySQL database selected");
             dbService = new MySqlDBService();
@@ -39,7 +29,7 @@ public class Main {
             dbService = new H2DBService();
         }
 
-        UserInterface userInterface = new ConsoleUserInterface(dbService);
+        final UserInterface userInterface = new ConsoleUserInterface(dbService);
         userInterface.initUI();
 
         logger.write("Closing...");
